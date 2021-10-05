@@ -1,6 +1,7 @@
 from flask_appbuilder.security.manager import AUTH_OID
 from flask_appbuilder.security.sqla.manager import SecurityManager
 from flask_oidc import OpenIDConnect
+from airflow.www.security import AirflowSecurityManager
 from .views import AuthOIDCView
 from logging import getLogger
 log = getLogger(__name__)
@@ -19,20 +20,7 @@ class OIDCSecurityManager(OIDCSecurityManagerMixin, SecurityManager):
     pass
 
 
-try:
-    from airflow.www_rbac.security import AirflowSecurityManager
 
-    class AirflowOIDCSecurityManager(OIDCSecurityManagerMixin,
-                                     AirflowSecurityManager):
-        pass
-except ImportError:
-    log.debug('Airflow not installed')
-
-try:
-    from superset.security import SupersetSecurityManager
-
-    class SupersetOIDCSecurityManager(OIDCSecurityManagerMixin,
-                                      SupersetSecurityManager):
-        pass
-except ImportError:
-    log.debug('Superset not installed')
+class AirflowOIDCSecurityManager(OIDCSecurityManagerMixin,
+                                 AirflowSecurityManager):
+    pass
